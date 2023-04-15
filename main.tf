@@ -33,7 +33,7 @@ resource "azurerm_network_interface" "main" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = '/subscriptions/139a319c-df00-476d-9252-94623e31323f/resourceGroups/Regen-Project-codehub-reg/providers/Microsoft.Network/virtualNetworks/Regen-Project-codehub-network/subnets/Regen-Project-codehub-subnetwork'
+    subnet_id                     = "/subscriptions/139a319c-df00-476d-9252-94623e31323f/resourceGroups/Regen-Project-codehub-reg/providers/Microsoft.Network/virtualNetworks/Regen-Project-codehub-network/subnets/Regen-Project-codehub-subnetwork"
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id = azurerm_public_ip.main.id
   }
