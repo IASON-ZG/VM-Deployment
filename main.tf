@@ -14,7 +14,7 @@ provider "azurerm" {
 
 
 resource "azurerm_public_ip" "main" {
-  name                = "${var.prefix}-PublicIp1"
+  name                = "${var.prefix}-PublicIp2"
   resource_group_name = "${var.prefix}-codehub-reg"
   location            = var.location
   allocation_method   = "Static"
@@ -27,7 +27,7 @@ resource "azurerm_public_ip" "main" {
 
 
 resource "azurerm_network_interface" "main" {
-  name                = "${var.prefix}-codehub-nic"
+  name                = "${var.prefix}-codehub-nic2"
   location            = var.location
   resource_group_name = "${var.prefix}-codehub-reg"
 
@@ -43,7 +43,7 @@ resource "azurerm_network_interface" "main" {
 
 
 resource "azurerm_virtual_machine" "main" {
-  name                  = "${var.prefix}-vm"
+  name                  = "${var.prefix}-vm-node"
   location              = var.location
   resource_group_name   = "${var.prefix}-codehub-reg"
   network_interface_ids = [azurerm_network_interface.main.id]
