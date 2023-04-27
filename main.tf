@@ -40,58 +40,44 @@ resource "azurerm_network_interface" "main" {
 }
 
 
-resource "tls_private_key" "example_ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
 
-
-resource "azurerm_ssh_public_key" "worker-key" {
-  name                = "worker-key"
-  resource_group_name = "${var.prefix}-codehub-reg"
-  location            = var.location
-  public_key          = tls_private_key.example_ssh.public_key_openssh
-}
-
-
-resource "azurerm_linux_virtual_machine" "main" {
+resource "azurerm_virtual_machine" "main" {
   name                  = "${var.prefix}-vm-node"
   location              = var.location
   resource_group_name   = "${var.prefix}-codehub-reg"
   network_interface_ids = [azurerm_network_interface.main.id]
-  size                  = "Standard_B1s"
+  vm_size               = "Standard_B1s"
 
-  source_image_reference {
+  # Uncomment this line to delete the OS disk automatically when deleting the VM
+  delete_os_disk_on_termination = true
+
+  # Uncomment this line to delete the data disks automatically when deleting the VM
+  delete_data_disks_on_termination = true
+
+  storage_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
     sku       = "16.04-LTS"
     version   = "latest"
   }
-  os_disk {
+  storage_os_disk {
     name              = "myosdisk2"
     caching           = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
   }
-
-  computer_name  = "hostname"
-  admin_username = var.admin_username
-  disable_password_authentication = true
-
-  admin_ssh_key {
-    username   = var.admin_username
-    public_key = tls_private_key.example_ssh.public_key_openssh
+  os_profile {
+    computer_name  = "hostname"
+    admin_username = var.admin_username
+    admin_password = var.admin_password
   }
-
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
   tags = {
     environment = "staging"
   }
-
-  # Run a command on the local machine to create a file containing the private key
-  provisioner "local-exec" {
-    command = "terraform output -raw ${tls_private_key.example_ssh.private_key_openssh} > id_rsa"
-  }
-} 
-
+}
 
 
 variable "location" {}
