@@ -87,9 +87,9 @@ resource "azurerm_linux_virtual_machine" "main" {
   }
 
   #Run a command on the local machine to create a file containing the private key
-  provisioner "local-exec" {
-    command = "sudo terraform output -raw ${tls_private_key.example_ssh.private_key_openssh} > id_rsa"
-  }
+  # provisioner "local-exec" {
+  #   command = "sudo terraform output -raw ${tls_private_key.example_ssh.private_key_openssh} > id_rsa"
+  # }
 }
 
   output "private_key" {
