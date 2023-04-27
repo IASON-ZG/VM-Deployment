@@ -40,6 +40,12 @@ resource "azurerm_network_interface" "main" {
 }
 
 
+resource "tls_private_key" "example_ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+
 
 
 resource "azurerm_virtual_machine" "main" {
@@ -70,14 +76,23 @@ resource "azurerm_virtual_machine" "main" {
   os_profile {
     computer_name  = "hostname"
     admin_username = var.admin_username
-    admin_password = var.admin_password
   }
   os_profile_linux_config {
-    disable_password_authentication = false
+    disable_password_authentication = true
+  }
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = tls_private_key.example_ssh.public_key_openssh
   }
   tags = {
     environment = "staging"
   }
+
+  #Run a command on the local machine to create a file containing the private key
+  provisioner "local-exec" {
+    command = "terraform output -raw tls_private_key > id_rsa"
+  }
+
 }
 
 
