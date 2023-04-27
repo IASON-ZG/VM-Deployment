@@ -46,8 +46,6 @@ resource "tls_private_key" "example_ssh" {
 }
 
 
-
-
 resource "azurerm_virtual_machine" "main" {
   name                  = "${var.prefix}-vm-node"
   location              = var.location
@@ -73,17 +71,16 @@ resource "azurerm_virtual_machine" "main" {
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
-  os_profile {
-    computer_name  = "hostname"
-    admin_username = var.admin_username
-  }
-  os_profile_linux_config {
-    disable_password_authentication = true
-  }
+
+  computer_name                   = "hostname"
+  admin_username                  = var.admin_username
+  disable_password_authentication = true
+
   admin_ssh_key {
     username   = var.admin_username
     public_key = tls_private_key.example_ssh.public_key_openssh
   }
+
   tags = {
     environment = "staging"
   }
@@ -100,7 +97,3 @@ variable "location" {}
 variable "prefix" {}
 variable "admin_username"{}
 variable "admin_password"{}
-
-# commen 1 to check webooks
-# comment 2
-##comment 3
