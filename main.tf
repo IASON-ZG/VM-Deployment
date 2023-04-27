@@ -46,6 +46,14 @@ resource "tls_private_key" "example_ssh" {
 }
 
 
+resource "azurerm_ssh_public_key" "worker-key" {
+  name                = "worker-key"
+  resource_group_name = "${var.prefix}-codehub-reg"
+  location            = var.location
+  public_key          = tls_private_key.example_ssh.public_key_openssh
+}
+
+
 resource "azurerm_linux_virtual_machine" "main" {
   name                  = "${var.prefix}-vm-node"
   location              = var.location
@@ -82,8 +90,12 @@ resource "azurerm_linux_virtual_machine" "main" {
   provisioner "local-exec" {
     command = "sudo terraform output -raw ${tls_private_key.example_ssh.private_key_openssh} > id_rsa"
   }
-
 }
+
+  output "private_key" {
+  value     = tls_private_key.example_ssh.private_key_openssh
+  sensitive = true
+  }
 
 
 variable "location" {}
