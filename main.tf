@@ -62,8 +62,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   os_disk {
     name              = "myosdisk2"
     caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+    storage_account_type = "Standard_LRS"
   }
 
   computer_name  = "hostname"
