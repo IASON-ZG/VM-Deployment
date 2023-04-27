@@ -51,7 +51,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   location              = var.location
   resource_group_name   = "${var.prefix}-codehub-reg"
   network_interface_ids = [azurerm_network_interface.main.id]
-  vm_size               = "Standard_B1s"
+  size                  = "Standard_B1s"
 
   # Uncomment this line to delete the OS disk automatically when deleting the VM
   delete_os_disk_on_termination = true
@@ -65,23 +65,22 @@ resource "azurerm_linux_virtual_machine" "main" {
     sku       = "16.04-LTS"
     version   = "latest"
   }
-  storage_os_disk {
+  os_disk {
     name              = "myosdisk2"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
-  os_profile {
-    computer_name  = "hostname"
-    admin_username = var.admin_username
-  }
-  os_profile_linux_config {
-    disable_password_authentication = true
-  }
+
+  computer_name  = "hostname"
+  admin_username = var.admin_username
+  disable_password_authentication = true
+
   admin_ssh_key {
     username   = var.admin_username
     public_key = tls_private_key.example_ssh.public_key_openssh
   }
+  
   tags = {
     environment = "staging"
   }
